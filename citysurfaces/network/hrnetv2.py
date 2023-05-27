@@ -325,7 +325,7 @@ class HighResolutionNet(nn.Module):
 
         self.classifier = nn.Linear(2048, 1000)
 
-        self.high_level_ch = np.int(np.sum(pre_stage_channels))
+        self.high_level_ch = np.int64(np.sum(pre_stage_channels))
 
     def _make_head(self, pre_stage_channels):
         head_block = Bottleneck

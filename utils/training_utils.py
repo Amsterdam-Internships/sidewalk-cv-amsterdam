@@ -1,20 +1,19 @@
-import citysurfaces.network.hrnetv2 as hrnetv2
 import copy
-import numpy as np
 import os
+from time import perf_counter
+
+import citysurfaces.network.hrnetv2 as hrnetv2
+import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 import torchvision
 import tqdm
-
-from architectures.two_model_ensemble import TwoModelEnsembleNet
 from architectures.coatnet import coatnet_0
+from architectures.two_model_ensemble import TwoModelEnsembleNet
 from sklearn.metrics import confusion_matrix
-from time import perf_counter
 from torch.optim import lr_scheduler
 from tqdm import tqdm
-
 
 CITYSURFACES_PRETRAINED_MODEL_PATH = "../models/block_c_10classes.pth"
 

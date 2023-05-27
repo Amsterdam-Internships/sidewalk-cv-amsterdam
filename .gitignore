@@ -45,3 +45,7 @@ env
 
 # Ignore xml metadata download folder
 xml-metadata
+
+panos
+
+

@@ -53,7 +53,7 @@ if __name__ == "__main__":
   ])
 
   # having issues with CUDA running out of memory, so lowering batch size
-  batch_size = 64
+  batch_size = 32
 
   train_labels_csv_path = args.train_set_csv
   train_img_dir = args.image_base_path
