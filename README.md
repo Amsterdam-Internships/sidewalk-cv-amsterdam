@@ -1,196 +1,23 @@
-This repository is for the paper:
-
-> Michael Duan, Shosuke Kiami, Logan Milandin, Johnson Kuang, Michael Saugstad, Maryam Hosseini, and Jon E. Froehlich. 2022. Scaling Crowd+AI Sidewalk Accessibility Assessments: Initial Experiments Examining Label Quality and Cross-city Training on Performance. In Proceedings of the 24th International ACM SIGACCESS Conference on Computers and Accessibility (ASSETS '22). Association for Computing Machinery, New York, NY, USA, Article 82, 1–5. https://doi.org/10.1145/3517428.3550381
-
-Which builds on our previous work:
-
-> Galen Weld, Esther Jang, Anthony Li, Aileen Zeng, Kurtis Heimerl, and Jon E. Froehlich. 2019. Deep Learning for Automatically Detecting Sidewalk Accessibility Problems Using Streetscape Imagery. In Proceedings of the 21st International ACM SIGACCESS Conference on Computers and Accessibility (ASSETS '19). Association for Computing Machinery, New York, NY, USA, 196–209. https://doi.org/10.1145/3308561.3353798
-
 # Assessing Sidewalk Quality With Deep Learning
+
 
 Sidewalks are supposed to provide a safe, environmentally-friendly means for pedestrians to move about the city landscape. As such, for people with disabilities, poor sidewalk quality can have a detrimental impact on independence, quality of life, and overall physical activity. Unfortunately, sidewalk accessibility issues are extremely common, but in recent years there has been much progress in collecting data on these issues and making it transparent/available. Most of this data is crowdsourced, and only recently have people begun investigating the application of machine learning in automatically performing these data collection/analyses. One region of particular interest is the application of AI assistance in the validation of crowdsourced accessibility labels, whether it be automatic or in collaboration with human validation. Manual validation is a laborious task, but has immense applications in data quality and also in increasing the amount of data that can be brought to governmental bodies who can take action in improving sidewalk infrastructure (consider this [resource](https://sidewalk-sea.cs.washington.edu/gallery)). As a result, alleviating the labor that accompanies validation is critical.
 
-## Abstract
-In this project, supplemented by the ever-growing Project Sidewalk dataset of 300,000+ image-based sidewalk accessibility labels, we aim to improve on the results/findings from the [2019 iteration](https://github.com/ProjectSidewalk/sidewalk-cv-assets19) of the project, which provided a novel examination of deep learning as a means to assess sidewalk quality in Google Street View (GSV) panoramas. To do so, we focus on one application area, the automatic validation of crowdsourced labels. Our goal is to introduce improvements in two regards: data quality (particularly, the types of image crops we are gathering) and utilizing modern deep learning techniques to highlight spatial/background context in supplementing the classification of the actual accessibility feature. In tackling the issue of data quality, we investigate strategies such as multi-size cropping as well as delving deeper and adjusting the pipeline used to map labels placed in the Project Sidewalk audit interface to the GSV panorama image being cropped from. In regards to model training, we compare strategies such as ensembling various models trained on different sized crops, as well as comparing model quality given a simplified problem space through the binary classification of individual label types. In evaluating the success of our strategies, we provide an analysis on dataset-wide metrics such as accuracy and loss, while also considering label-type-specific metrics such as precision and recall per label type.
+## In short
 
-## Video Here
-
-[![Watch the video](https://user-images.githubusercontent.com/52512290/146133674-3902d85a-31cf-4be6-8a58-9463ae741932.png)](https://www.youtube.com/watch?v=lM0wCvW9yho)
+This repository is used to experiment with training different models on panorama images. These different experiments can be visualized, creating a clear overview of the performence of a certain model. These visualizations can be used to compare different models, to see what model is the best fit for a certain dataset.
 
 
-## Related Work
-Our project expands upon the research performed by [Weld et al.](https://makeabilitylab.cs.washington.edu/media/publications/Weld_DeepLearningForAutomaticallyDetectingSidewalkAccessibilityProblemsUsingStreetscapeImagery_ASSETS2019.pdf) in 2019, which applied multimodal deep learning to automatically validate crowdsourced labels and automatically label sidewalk accessibility issues given streetview panoramic imagery. Now, equipped with more validated data, we seek to improve on the results observed in 2019, particularly in regards to automatic crowdsourced label validation. Our goal is to eventually integrate an improved classification pipeline into the current Project Sidewalk validation interface as an "AI assistant" of sorts. To do so, we look to first clean/modify the data acquisition pipeline. Investigation into the 2019 data acquisition pipeline demonstrated inconsistency in the usability of the crops, whether it be inaccurate crop placement or data that is simply trivial due to black space. This issue is one that possibly stems deep into the Project Sidewalk auditing interface itself in terms of data collection, so we are working closely with the lab to gain more accurate data. Clearly, we don't want our models to learn on dirty data. We also look to take different approaches to model training. Some of the novel training strategies attempted in the 2019 paper consisted of utilizing multimodal data (image data and non-image data in the form of positional/geographic features). However, we choose to take a simpler approach and stick to unimodal data (simply image data) as we reason that spatial context is more important (humans can classify accessibility problems well with just image data) and it removes dependencies on additional metadata from Google, which is subject to change in availability. Should we choose to utilize multimodality, we want to explore avenues such as including data in terms of a label's relativity to other labels, for example. Ultimately, as stated before, we want to make automatic label data validation more feasible/reliable as accurate data exposing sidewalk infrastructure issues can incite action from political bodies that make sidewalks more accessible to all.
+This repository is a fork from the [sidewalk-cv-2021](https://github.com/michaelduan8/sidewalk-cv-2021)repo, to which I added my own experiments. These experiments come in the form of bash scripts. In these scripts, python procedures are called to train, test, evaluate,... on different datasets. 
 
-## Methodology
-### Data Acquisition
-As mentioned before, our datasets consisted of crowdsourced labels from the Project Sidewalk database. In order to ensure the quality of the human labels, we only chose validated labels satisfying the following conditions:
+## Installation and Usage
 
-`disagree validations <= 2` and `agree validations > 2 * disagree validations`
+More information about the subject, method of work, and previous experiments can be found in the original [README](../sidewalk-cv-2021/ORIGINALREADME.md).
+To start using this repo, follow the guide from [here](https://docs.google.com/document/d/1N4uyNYZS9r0F5Uht_QYrbUqwXejvFkgpgqRUwCXJKWM/edit#). This guide should give a clear and suffisant overview of the different python scripts, and how to use them in the experiments.
+There are a couple of things to keep in mind however:
 
-In addition, we aimed to have a relatively balanced dataset. Given that our explorations for this project were limited to the Seattle Project Sidewalk label dataset, below are the individual label counts for the four accessibility features/problems we aimed to classify:
+- To run the experiments, you have to ask Michael Duan for 2 files which you have to put in the models folder: block_c_10classes.pth and hrnetv2_w48_imagenet_pretrained.pth , which contain the relevant weights for some of the experiments. 
+- I had a lot of issues trying to run these experiments on a Windows machine. Try using a Linux environment instead.
+- You can try different batch sizes in [train.py](../sidewalk-cv-2021/train.py) to optimize the training time for your machine.
+- I have asked Mikey Saugstad for a SFTP key, but this feature is still a work in progress. The panoramas have to be downloaded from a different [repository](https://github.com/ProjectSidewalk/sidewalk-panorama-tools).
 
-| Label Type | Label Type ID | Count |
-| ---------- | ------------- | ----- |
-| Curb Ramp | 1 |   69k    |
-| Missing Curb Ramp | 2 |  34k    |
-| Obstacle | 3 |    10k     |
-| Surface Problem | 4 |  25k    |
-
-These are the counts without filtering the labels that don't satisfy the validation conditions above, so in trying to build a balanced dataset of 10k labels per label type, our final counts were 9998 curb ramps, 10000 missing curb ramps, 8930 obstacles, 10000 surface problems. One thing to note is that labels might have been discarded due to the panorama imagery they were cropped from not existing or the crop size going out of the vertical bounds of the GSV imagery, which will be discussed later. This explains why there are less than 10000 curb ramps despite the overwhelming majority of curb ramps in the Seattle database. The smaller quantity of obstacles is due to the smaller quantity of obstacles in the Seattle database overall.
-
-In querying the Project Sidewalk Seattle database, we looked for these data points per label:
-
-`gsv_panorama_id, sv_image_x, sv_image_y, label_type_id, photographer_heading, label_id`
-
-The `gsv_panorama_id` allowed us to download the associated GSV panorama static image for the panorama the label had been originally placed on in the audit interface from the Project Sidewalk SFTP server containing scraped panorama images from GSV. We then made use of existing utility functionality to make square label crops for each label, centering the crops around the label location on the gsv image (calculated via `sv_image_x, sv_image_y, photographer_heading`). The `label_type_id` gave us the associated label for the image crop and the `label_id` gave us a method to name the label crops. 
-
-#### Multi-size Cropping
-One strategy we wanted to try was to get different sized crops per label (still centered on the label in the GSV panorama image) in order to provide more background context to the crops (for example, a smaller crop of a fire hydrant in the middle of the sidewalk - an obstacle - might not show enough sidewalk for even a human to deem the fire hydrant an obstacle). As a result, for each label we made a crop for, we additionally made another crop whose dimensions where 1.5 times greater. Since these images would all end up being resized to `224x224` crops to feed into our models, we were interested in seeing how the greater pixel density of the smaller crops in proximity to the label would compare to the increased background context provided by the larger crops in terms of model accuracy. In addition, as we'll discuss later, we wanted to investigate how a model might improve given access to both these crop types, being able to learn from the higher pixel density as well as the provided background context.
-
-#### Null Crops
-In identifying sidewalk accessibility features/problems, we also wanted to make sure our model learned how to predict the absence of the aforementioned accessibility  features/problem. To do so, we implemented a cropping strategy that cropped `n` null crops (where `n` is set by us; for our case, `n = 1`) per GSV panorama image downloaded in attempting to crop the labels. We also designed helper classes that ultimately allowed us to keep track of all the labels that were to be cropped from a given panorama. We then randomly selected a point `(x, y)` on the GSV panorama image as such:
-
-`x = random.uniform(side_space, GSV_IMAGE_WIDTH - side_space), y = random.uniform(- (GSV_IMAGE_HEIGHT/2 - bottom_space), 0)`
-
-Which essentially chose a random point which was horizontally between the edges of the panorama (given some padding) as well as under the vertical middle of the image (and slightly above the bottom of the image). This was in order to best simulate a feasible location on the ground/sidewalk that didn't have an accessibility feature/problem, as the vertical coordinate of the random point is under the horizon (or close to under the horizon, given the pitch of the camera when the GSV panorama was taken). The horizontal and vertical paddings are to make sure the crop doesn't leak over the borders of the image (though, in making crops in general, if a crop would've leaked along the HORIZONTAL edges of the image, we essentially made the crop wrap around to the other side of the panorama as the panoramas encompassed a 360 degree view; this was not the case if it leaked over the VERTICAL edges, as the panoramas did not encompass a 360 degree view vertically).
-
-We then made sure that this random point was at least some `min_dist` away from any other actual labels on the panorama so that we could minimize accidently creating a null crop that could be mistaken for an accessibility feature/problem. We then gave these null crops a label of 0 and provided them as part of our dataset.
-
-*Currently, we have not implemented the multi-size cropping strategy for the null crops, but do note that the two data acquisition strategies are not disjoint*
-
-#### Dataset Evolution
-We will quickly describe the dataset iterations we went through.
-- Dataset 1: We began with an imbalanced dataset which contained far more null crops. 
-- Dataset 2: We created a dataset of ~30k non-null crop labels while waiting to acquire a more balanced dataset with null crops. Note that this dataset was still quite imbalanced due to a lack of obstacle labels in comparison to the other label types.
-- Dataset 3: We created a balanced dataset of ~10k labels per label type (including null crops).
-- Dataset 4: With the above data acquisition strategies, our final dataset (currently) consists of 20469 null crops, 19996 curb ramps, 20000 missing curb ramps, 17860 obstacles, and 20000 surface problems, derived from applying the multi-size cropping strategy to Dataset 3. Note that this is quite small given that we also have numerous labels from other municipalities; however, in consideration of time and machinery limitations, we decided to keep our dataset a reasonable size for experimentation before fully committing to a long training run.
-
-### Initial Training Attempts
-Our initial objective was to pick out some promising network architectures from the [torchvision.models](https://pytorch.org/vision/stable/models.html) package, utilizing transfer learning to fit the architectures to our problem space. Dataset 1 (see above) had a huge imbalance of null crops and was causing models to just predict null for almost every image, so we did these initial training runs with only positive examples (dataset 2) in order to get a rough idea of performance on the non-null classes. We trained several models for 50 epochs using SGD with default hyperparameters (learning rate, momentum, etc.) and no weight decay. We plotted per-class precision and recall, as well as overall accuracy and loss, as a function of epoch. We tried several mid-size architectures including [efficientnet](https://pytorch.org/hub/nvidia_deeplearningexamples_efficientnet/), [densenet](https://pytorch.org/hub/pytorch_vision_densenet/), and [regnet](https://pytorch.org/vision/master/_modules/torchvision/models/regnet.html). Note that each of these models comes in varying sizes, so we selected the largest ones that would fit in the RAM available to us and take a reasonable amount of time to train. We found that all of these models achieved similar performace on the metrics we tracked, but efficientnet and regnet trained significantly faster than densenet, so we focused on these architectures moving forward. This initial round of training revealed some issues such as overfitting and noisy updates. These plots, aquired from efficientnet training runs, are representative of some issues we faced:
-
-<img src="./writeup_images/overfit_loss.png" width=400 /><img src="./writeup_images/overfit_accuracy.png" width=400 />
-
-<center> <figcaption>Increasing loss and decreasing accuracy on validation set, indicative of overfitting</figcaption> </center>
-
-<img src="./writeup_images/spiky_recall.png" width=400 /> <img src="./writeup_images/spiky_precision.png" width=400 />
-
-<center><figcaption>Spiky recall and precision curves, indicating noisy updates</figcaption></center>
-
-### Improving Training Hyperparameters
-To help resolve these issues, we implemented learning rate scheduling and added weight decay to our loss calculations. We tried a step scheduler, where learning rate decreases by some factor after a certain number of epochs, as well as a cyclic scheduler, where learning rate gradually decreases and then sharply increases every so often. The best learning rate strategy we found was a simple step scheduler that decreased learning rate by a factor of .3 every 10 epochs, starting from .01. The best weight decay we found was around 1e-6. These improvements gave us plots such as the following, training on the same dataset: <br>
-<img src="./writeup_images/better_loss.png" width=400 />
-<img src="./writeup_images/better_accuracy.png" width=400 />
-
-<center><figcaption>Less overfitting, though still some</figcaption></center>
-
-<img src="./writeup_images/less_spiky_recall.png" width=400 />
-<img src="./writeup_images/less_spiky_precision.png" width=400 />
-
-<center><figcaption>Precision and recall curves begin to converge</figcaption></center>
-
-### Training on Better Data
- Another glaring issue revealed by our initial training efforts is that obstacles had much lower precision and recall than all the other classes. We believed this was due to imbalances in our dataset, namely that there were much fewer positive examples for obstacles. We first attempted to resolve this by implementing a weighted loss function that penalizes predictions for the more common labels and rewards predictions for the less common labels, and we had some success with this. Precision and recall was a little higher for obstacles, but at the expense of lower precision and recall for the other classes. It turned out that balancing the dataset itself was a better approach than artificially modifying the loss function, which led us to aquire and train on dataset 3 (see above). The following plots show the results of training with this new dataset and the hyperparameters we determined above:
-
- <center><img src="./writeup_images/accuracies_small-efficientnet.png" width=600 /></center>
-<center><figcaption>Validation accuracy reaches around 70%</figcaption></center>
-<br>
-
-<center><img src="./writeup_images/precision_validation_small-efficientnet.png" width=600 /></center>
-<center><figcaption>Precision reaches around 70% for obstacles, missing curb ramps, and surface problems, 60% for null, and 75% for curb ramps</figcaption></center>
-<br>
-<center><img src="./writeup_images/recall_validation_small-efficientnet.png" width=600 /></center>
-<center><figcaption>Recall hovers just below 70% for null and just above 70% for other classes</figcaption></center>
-<br>
-
-### Ensembling Architectures
-In addition to aquiring a better dataset, our next step was coming up with more novel architectures to try and improve performance. A friend of ours pointed us to some interesting documentation on [ensembling](https://ensemble-pytorch.readthedocs.io/en/latest/introduction.html), which is essentially training multiple models and somehow combining their results to give a better overall performance.
-
-Ensembling of Binary Classifiers: One approach we tried that we found interesting involved independently training a binary classifier for each of the 4 non-null classes, and then combining them into a model that passes the combined output of each through an additional fully connected layer to get a multi-class prediction. Our idea here was that it may be easier for a model to learn which images are positive examples of a given class if we just label every other image as a negative example rather than with a variety of other labels. To do this training, we made a new set of labels for each class where all images that aren't a positive example of the class in question are labeled as negative, and then trained with the same dataset. We'll discuss the results of this approach more in the next section, but overall it didn't really work out.
-
-Ensembling of Models Trained on Different Size Crops: The more promising ensembling strategy we used involved taking two image crops for each labeled sidewalk feature (dataset 4). We were able to do this because the original data is street view panoramas with coordinates of sidewalk features, so it's up to us how large to make the crops around each feature. We trained one model on the crops we had in our current dataset (we called these "small"), and trained another model on zoomed out versions of the same crops (we called these "large"). We then combined the models into a model that takes as input both the small and large crop for a given sidewalk feature. For a forward pass, the model passed each image to the corresponding model and combined the output of each to obtain a final prediction vector. We tried simply concatenating the output of each model and passing the result through a single fully-connected layer, as well as more complex strategies such as removing the last layer of each model and passing the larger concatenated feature map through several fully-connected layers with activation functions between each. We'll discuss the results of this approach more in the next section.
-
-## Results/Analysis
-
-### Ensembling of Binary Classifiers
-
-When training independent binary classifiers, we found that our models were unable to reach a higher precision or recall on the individual classes than the ordinary multi-class classifiers. For this reason, we did not go to the effort of assembling the binary classifiers in order to make a multi-class prediction. However, this architecture could be tweaked to allow us to make multiple predictions for a given image, which may be useful to us. We'll discuss this more in the next section.
-
-### Ensembling of Models Trained on Different Size Crops
-The results of this approach are more interesting. After training a model on the "large" crops (more zoomed out), we combined the outputs with the model trained on the normal size ("small") crops and passed them through a fully connected layer. We then trained this final FC layer for some additional epochs, but noticed none of the metrics seemed to be improving so stopped early. As mentioned above, we also tried removing the last layer of each model and passing the larger feature map through multiple fully-connected layers, but our results were better with the former approach. These plots indicate the performance of this ensemble network:
-
- <center><img src="./writeup_images/accuracies_PairedTwoModelEnsembleNet.png" width=600 /></center>
-<center><figcaption>Validation accuracy hovers around 79%</figcaption></center>
-<br>
-<center><img src="./writeup_images/precision_validation_PairedTwoModelEnsembleNet.png" width=600 /></center>
-<center><figcaption>Spiky updates because learning rate is high for early epochs, but precision hovers around 80% for most classes and 75% for null</figcaption></center>
-<br>
-<center><img src="./writeup_images/recall_validation_PairedTwoModelEnsembleNet.png" width=600 /></center>
-<center><figcaption>Again, spiky updates because of short training run, but recall hovers between 75% and 80% for most classes and above 85% for null</figcaption></center>
-<br>
-
-One huge improvement we saw with this network compared to the one trained on the original "small" crops is that the recall for null crops improved a ton, from less than 70% to over 85%. The precision and recall for the other classes, as well as overall accuracy, were significantly higher as well. At this point, we began to wonder how much of this improvement came from combining the results of two models and how much came from just training one of the models on larger crops. So we made training plots for the individual model trained on the large crops:
-
-<center><img src="./writeup_images/accuracies_large-efficientnet.png" width=600 /></center>
-<center><figcaption>Validation accuracy reaches around 78%</figcaption></center>
-<br>
-<center><img src="./writeup_images/precision_validation_large-efficientnet.png" width=600 /></center>
-<center><figcaption>Precision hovers a little below 80% for most classes, including null, and is slightly higher for curb ramps</figcaption></center>
-<br>
-<center><img src="./writeup_images/recall_validation_large-efficientnet.png" width=600 /></center>
-<center><figcaption>Recall hovers between 75% and 80% for most classes and around  85% for null</figcaption></center>
-<br>
-It seems that validation accuracy and precision are marginally lower than for the ensemble model, but null precision seems a little higher. If anything, the ensemble approach is only slightly better than just training on larger crops, and training on larger crops alone appears far better than training on crops of the original size.
-
-## Discussion and Conclusion
-It surprised us that we saw such a huge performance increase just by zooming out to take the panorama crops; the previous attempt at this project used crops of the size we were using initially, and never mentioned attempting to zoom out further. But, it sort of makes sense that zooming out helps a lot because it provides more context of the surrounding scenery. Without this context, it is often impossible (even for a human) to tell what a given image is indicating. For example, given a close-up picture of a curb, there's no way to tell whether it's missing a curb ramp or if it's just an ordinary curb section that doesn't require a ramp. That said, we expect that zooming out too far would have a negative impact on performance because there'd be too much other imagery present for the model to learn what to focus on.
-<br>
-
-The best model achieved by [Weld et al.](https://makeabilitylab.cs.washington.edu/media/publications/Weld_DeepLearningForAutomaticallyDetectingSidewalkAccessibilityProblemsUsingStreetscapeImagery_ASSETS2019.pdf) had slightly better performance than we reached here (accuracy wasn't reported, but average precision and recall above 80%), but it was also much larger than any model we could train with the RAM resources available to us and was trained on far more images than we could fit on the disk space available to us. The best model we were able to train for the purposes of this project (~80% validation set accuracy and just below 80% precision and recall for most classes) is not good enough to be useful in practice, so we can consider this a still unsolved problem, but our work has given us deep insights into the nuances of this problem space that should lead to more practical results in the near future. We believe that if we spend some time next quarter optimizing the zoom level from which we take the training crops, we can achieve better performance on this problem space than anyone before us.
-
-## Performance Demo
-[![Watch the video](https://user-images.githubusercontent.com/52512290/146120569-677482ac-5236-48d4-aeea-87b8c106242b.png)](https://www.youtube.com/watch?v=jNElblf4s4E)
-
-
-## Next Steps
-### Cleaner Data
-We still notice a lot of "dirty" labels such as the ones below: 
-
-<img src="https://user-images.githubusercontent.com/37346427/146063093-4224ea5d-71ff-4ccb-8799-e279d46b7980.png" width=250 /><img src="https://user-images.githubusercontent.com/37346427/146063111-62dd2076-7409-413f-9d46-f8b2b3b9dfd8.png" width=250 /><img src="https://user-images.githubusercontent.com/37346427/146063120-9bba9778-d38a-401e-9f87-b6f71ebac7d1.png" width=250 />
-
-
-While we have resolved some issues due to labels being too close to the horizontal edges of the image leading to cut-off crops as well as GSV imagery of different resolution (some GSV panorama images we downloaded were `13312x6656`, while others were `16384x8192`) leading to incorrectly placed labels (as the image coordinates of the label were incorrectly scaled), we still see incorrect labels of the above variety. Evidently, this is not ideal for training an effective model.
-
-One hypothesis we are considering is that the translation from the label placement on the Project Sidewalk audit interface to the GSV panorama image is faulty. For context, below is a screenshot of the Project Sidewalk audit interface followed by an example of a GSV panorama image (the panorama being rendered in the audit interface isn't the same panorama as the example GSV panorama image):
-
-![image](https://user-images.githubusercontent.com/37346427/146039155-cc54862a-de01-4a7e-b49c-4a6eb8eda082.png)
-![iqN6itQWY2qFwXx3lfcAhw](https://user-images.githubusercontent.com/37346427/146039323-e355892f-2472-46df-afe5-f35c670f9d41.jpg)
-
-Essentially, we map the label's viewport or "canvas" coordinates (where the viewport is essentially just a windowed region over a portion of the panorama that may be zoomed in/out) to a coordinate over the entire panorama. The current implementation of the mapping process is derived from this [stackoverflow post](https://stackoverflow.com/questions/21591462/get-heading-and-pitch-from-pixels-on-street-view). The derived heading/pitch of the label is then translated back into GSV image coordinates over the entire GSV image panorama. One area of contention is the translation of heading/pitch to a pixel coordinate, as the [current implementation](https://github.com/ProjectSidewalk/SidewalkWebpage/blob/develop/public/javascripts/common/UtilitiesPanomarker.js#L130) utilizes the idea that the change-in-degree per pixel is linear, which is not necessarily the case.
-
-Another solution to the problem if the math doesn't work out is to simply build a data cleaning interface where we can manually prune faulty labels (as they are a minority of the total crops). However, while the implementation of the interface isn't necessarily difficult, the manual cleaning process doesn't scale well with increased dataset size (a reason for why we decided against this strategy for the current dataset given the timeline).
-### Experimenting with Different Zoom Levels
-As mentioned in our results, our accuracy, precision, and recall were all far higher when training a model on larger crops (more zoomed out) for each sidewalk feature in our dataset. Given that the best attempts at this problem before us did not experiment with different zoom levels, we believe this is one of the largest areas of potential improvements to performance. We propose experimenting with many different zoom levels, training models for each one and seeing how performance metrics vary as a function of zoom levels. This will allow us to determine the optimal distance from which to have our model view each sidewalk feature. We expect that this, along with cleaning the bad images from our dataset, will allow us to achieve better performance than the previous attempt at this problem.
-### A More Complete Validation Pipeline
-Currently, our implementation for the validation pipeline is to simply pass a crop into the model and output what the model predicts the class of the crop is (the top-1 result). The human validator could then choose to agree or disagree. However, this is a flawed approach, as there are many instances of label crops that can be labeled as multiple accessibility features. For example, consider this "hard" example:
-
-![0](https://user-images.githubusercontent.com/37346427/146073558-f4bfb9fb-db38-4c6c-a6e4-0d87c38b2da6.png)
-
-This was reported as an incorrect labeling by the model, yet this is not necessarily the case. This is a curb ramp, but there is evidently surface problems as seen through the grassy cracks and uneven surface. Therefore, we propose a different architecture. We will train individual binary classifiers on the four respective label types, each outputting a confidence of how likely an inputted image is to be of the respective label type. Therefore, for any image to be validated, for each label type model which outputs a confidence for the image above a certain threshold (say 90%), the AI validation pipeline will output that label type as an option. Given the set of options, one could check whether the human validation for the image is in the set as a measure of validity. 
-
-# Technical Details
-## Setup
-1. Acquire sftp server credentials from Mikey and place them at the root of the project folder as `alphie-sftp`.
-2. Run `pip3 install -r requirements.txt`.
-3. Create a folder called `rawdata` in the project root and add a metadata csv (from Mikey) and update `path_to_labeldata_csv` in `scrape_and_crop_labels.py`.
-4. Make sure to remove `batch.txt`, `crop_info.csv`, `crop.log`, `pano-downloads/`, and `crops/`.
-5. Run `python3 scrape_and_crop_labels.py`.
-6. Crops will be stored in the generated `crops` folder.
-
-## Training
-### Training on UW Instructional GPU machine
-1. SSH into machine
-2. Run this command to create a new nested bash session: `tmux new -s my_session`
-3. Detach the bash session so that it persists after the SSH connection is dropped via `ctrl+b` then just `d`
-4. Reattach/re-enter the session via `tmux attach-session -t my_session`
-5. Kill the bash session by stopping running processes and typing `exit` in the terminal
- 
